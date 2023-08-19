@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Screensaver</title>
+    <style>
+      /* css */
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: black;
+        overflow: hidden;
+      }
+      #image {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <img id="image" src="image.png">
+    <script>
+      // js
+      (function () {
+        'use strict';
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const image = document.getElementById('image');
+
+        function changeCanvasSize() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        changeCanvasSize();
+        window.addEventListener('resize', changeCanvasSize);
+
+        const boxWidth = 200;
+        const boxHeight = 200;
+        const boxSpeed = 0.25;
+
+        const box = {
+          x: Math.floor(Math.random() * (canvas.width - boxWidth)),
+          y: Math.floor(Math.random() * (canvas.height - boxHeight)),
+          xDirection: 1,
+          yDirection: 1,
+          color: Math.floor(Math.random() * 256),
+        };
+
+        function step(delta) {
+          box.x += box.xDirection * boxSpeed * delta;
+          if (box.x <= 0) {
+            box.x = 0;
+            box.xDirection *= -1;
+            box.color = Math.floor(Math.random() * 256);
+          }
+          if (box.x + boxWidth >= canvas.width) {
+            box.x = canvas.width - boxWidth;
+            box.xDirection *= -1;
+            box.color = Math.floor(Math.random() * 256);
+          }
+          box.y += box.yDirection * boxSpeed * delta;
+          if (box.y <= 0) {
+            box.y = 0;
+            box.yDirection *= -1;
+            box.color = Math.floor(Math.random() * 256);
+          }
+          if (box.y + boxHeight >= canvas.height) {
+            box.y = canvas.height - boxHeight;
+            box.yDirection *= -1;
+            box.color = Math.floor(Math.random() * 256);
+          }
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          if (image) {
+            ctx.fillStyle = `#000`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, box.x, box.y, boxWidth, boxHeight);
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.fillStyle = `hsl(${box.color},100%,50%)`;
+            ctx.fillRect(box.x, box.y, boxWidth, boxHeight);
+            ctx.globalCompositeOperation = 'source-over';
+          } else {
+            ctx.fillStyle = `hsl(${box.color},100%,50%)`;
+            ctx.fillRect(box.x, box.y, boxWidth, boxHeight);
+          }
+        }
+
+        let start = 0;
+        requestAnimationFrame(function loop(now) {
+          let delta = now - start;
+          start = now;
+          step(delta);
+          draw(image);
+          requestAnimationFrame(loop);
+        });
+      })();
+    </script>
+  </body>
+</html>
