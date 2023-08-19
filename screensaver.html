@@ -28,6 +28,7 @@
         const image = document.getElementById('image');
 
         const directionOffset = 0.1;
+        let lastChangeColor = 0;
 
         const box = {
           x: 0,
@@ -91,6 +92,7 @@
             box.yDirection = -1 * Math.sign(box.yDirection) + directionOffset * (Math.random() * 2 - 1);
             box.color = pickDifferentColor(box.color);
           }
+          lastChangeColor += delta;
         }
 
         function draw() {
@@ -110,8 +112,14 @@
         }
 
         function pickDifferentColor(currentColor) {
-          // Pick a hue value that is between 1/6 and 5/6 around the color wheel from the current color.
-          return Math.floor((currentColor + (Math.random() * 256 * 4/6 + 256 * 1/6)) % 256);
+          if (lastChangeColor > 500) {
+            lastChangeColor = 0;
+            // Pick a hue value that is between 1/6 and 5/6 around the color wheel from the current color.
+            return Math.floor((currentColor + (Math.random() * 256 * 4/6 + 256 * 1/6)) % 256);
+          } else {
+            // This is to prevent the color from changing too quickly.
+            return currentColor;
+          }
         }
       })();
     </script>
