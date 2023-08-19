@@ -34,38 +34,47 @@
         changeCanvasSize();
         window.addEventListener('resize', changeCanvasSize);
 
-        const boxWidth = 200;
-        const boxHeight = 200;
-        const boxSpeed = 0.25;
-
         const box = {
-          x: Math.floor(Math.random() * (canvas.width - boxWidth)),
-          y: Math.floor(Math.random() * (canvas.height - boxHeight)),
-          xDirection: 1,
-          yDirection: 1,
+          x: 0,
+          y: 0,
+          xDirection: Math.random() > 0.5 ? 1 : -1,
+          yDirection: Math.random() > 0.5 ? 1 : -1,
           color: Math.floor(Math.random() * 256),
+          width: 200,
+          height: 200,
+          speed: 0.25,
         };
 
+        box.x = Math.floor(Math.random() * (canvas.width - box.width));
+        box.y = Math.floor(Math.random() * (canvas.height - box.height));
+
+        image.addEventListener('load', function(event) {
+          box.width = image.width;
+          box.height = image.height;
+          box.x = Math.floor(Math.random() * (canvas.width - box.width));
+          box.y = Math.floor(Math.random() * (canvas.height - box.height));
+        });
+
         function step(delta) {
-          box.x += box.xDirection * boxSpeed * delta;
+          box.x += box.xDirection * box.speed * delta;
           if (box.x <= 0) {
             box.x = 0;
             box.xDirection *= -1;
             box.color = Math.floor(Math.random() * 256);
           }
-          if (box.x + boxWidth >= canvas.width) {
-            box.x = canvas.width - boxWidth;
+          if (box.x + box.width >= canvas.width) {
+            box.x = canvas.width - box.width;
             box.xDirection *= -1;
             box.color = Math.floor(Math.random() * 256);
           }
-          box.y += box.yDirection * boxSpeed * delta;
+          box.y += box.yDirection * box.speed * delta;
           if (box.y <= 0) {
             box.y = 0;
             box.yDirection *= -1;
             box.color = Math.floor(Math.random() * 256);
           }
-          if (box.y + boxHeight >= canvas.height) {
-            box.y = canvas.height - boxHeight;
+          if (box.y + box.height >= canvas.height) {
+            box.y = canvas.height - box.height;
             box.yDirection *= -1;
             box.color = Math.floor(Math.random() * 256);
           }
@@ -73,17 +82,17 @@
 
         function draw() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          if (image) {
+          if (image && image.height != 0) {
             ctx.fillStyle = `#000`;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(image, box.x, box.y, boxWidth, boxHeight);
+            ctx.drawImage(image, box.x, box.y, box.width, box.height);
             ctx.globalCompositeOperation = 'multiply';
             ctx.fillStyle = `hsl(${box.color},100%,50%)`;
-            ctx.fillRect(box.x, box.y, boxWidth, boxHeight);
+            ctx.fillRect(box.x, box.y, box.width, box.height);
             ctx.globalCompositeOperation = 'source-over';
           } else {
             ctx.fillStyle = `hsl(${box.color},100%,50%)`;
-            ctx.fillRect(box.x, box.y, boxWidth, boxHeight);
+            ctx.fillRect(box.x, box.y, box.width, box.height);
           }
         }
 
