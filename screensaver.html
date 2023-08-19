@@ -34,11 +34,13 @@
         changeCanvasSize();
         window.addEventListener('resize', changeCanvasSize);
 
+        const directionOffset = 0.1;
+
         const box = {
           x: 0,
           y: 0,
-          xDirection: Math.random() > 0.5 ? 1 : -1,
-          yDirection: Math.random() > 0.5 ? 1 : -1,
+          xDirection: (Math.random() > 0.5 ? 1 : -1) +  directionOffset * (Math.random() * 2 - 1),
+          yDirection: (Math.random() > 0.5 ? 1 : -1) + directionOffset * (Math.random() * 2 - 1),
           color: Math.floor(Math.random() * 256),
           width: 200,
           height: 200,
@@ -59,23 +61,23 @@
           box.x += box.xDirection * box.speed * delta;
           if (box.x <= 0) {
             box.x = 0;
-            box.xDirection *= -1;
+            box.xDirection = -1 * Math.sign(box.xDirection) + directionOffset * (Math.random() * 2 - 1);
             box.color = Math.floor(Math.random() * 256);
           }
           if (box.x + box.width >= canvas.width) {
             box.x = canvas.width - box.width;
-            box.xDirection *= -1;
+            box.xDirection = -1 * Math.sign(box.xDirection) + directionOffset * (Math.random() * 2 - 1);
             box.color = Math.floor(Math.random() * 256);
           }
           box.y += box.yDirection * box.speed * delta;
           if (box.y <= 0) {
             box.y = 0;
-            box.yDirection *= -1;
+            box.yDirection = -1 * Math.sign(box.yDirection) + directionOffset * (Math.random() * 2 - 1);
             box.color = Math.floor(Math.random() * 256);
           }
           if (box.y + box.height >= canvas.height) {
             box.y = canvas.height - box.height;
-            box.yDirection *= -1;
+            box.yDirection = -1 * Math.sign(box.yDirection) + directionOffset * (Math.random() * 2 - 1);
             box.color = Math.floor(Math.random() * 256);
           }
         }
